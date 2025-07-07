@@ -1,0 +1,53 @@
+<html>
+    <body>
+        <script src="https://cdn.jsdelivr.net/npm/@turf/turf"></script>
+        <script>
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    const latitude = position.coords.latitude;
+                    const longitude = position.coords.longitude;
+                    checkIfAreaMetropolitana(latitude,longitude);
+                }, function(error) {
+                    console.error("Error getting location: " + error.message);
+                });
+            } else {
+                console.log("Geolocation is not supported by this browser.");
+            }
+
+            // Coordinates for the Area Metropolitana de Monterrey (AMM) with Garcia, Cadereyta, Allende, Cienega de Flores, Santiago included
+            const ammCoordinates = [
+                [-100.4018, 25.6363],  // Monterrey
+                [-100.3641, 25.7004],  // San Pedro
+                [-100.3523, 25.7678],  // Santa Catarina
+                [-100.3142, 25.7611],  // Escobedo
+                [-100.2967, 25.7457],  // Guadalupe
+                [-100.2669, 25.7426],  // San Nicolás
+                [-100.2565, 25.7268],  // Apodaca
+                [-100.2518, 25.7091],  // General Escobedo
+                [-100.2663, 25.6955],  // Guadalupe
+                [-100.2919, 25.6883],  // Monterrey
+                [-100.3135, 25.6811],  // Santa Catarina
+                [-100.3432, 25.6813],  // Santa Catarina
+                [-100.3729, 25.6790],  // Monterrey
+                [-100.3885, 25.6603],  // Monterrey
+                [-100.6256, 25.7000],  // Garcia (west)
+                [-100.5778, 25.8320],  // Cadereyta (north-east)
+                [-100.3800, 25.9750],  // Allende (north-east)
+                [-100.1089, 25.7732],  // Cienega de Flores (north-east)
+                [-100.2232, 25.4047],  // Santiago (south)
+                [-100.4018, 25.6363]   // Closing the polygon (same as the first coordinate)
+            ];
+            function checkIfAreaMetropolitana(latitude, longitude) {
+                const polygon = turf.polygon([ammCoordinates]);
+                const point = turf.point([longitude, latitude]);
+                // Check if the point is inside the polygon
+                const isInside = turf.booleanPointInPolygon(point, polygon);
+                if (isInside) {
+                    document.body.append("Dentro del area metropolitana");
+                } else {
+                    document.body.append("Fuera del area metropolitana");
+                }
+            }
+        </script>
+    </body>
+</html>
